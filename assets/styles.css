@@ -1,7 +1,7 @@
 :root {
     --font: 255, 255, 255;
     --accent: 30, 144, 255;
-    --background: 0, 0, 0;
+    --background: 15, 15, 15;
     --blur: 10px;
     --font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
     --rad1: 12px;
@@ -17,6 +17,10 @@ body {
     padding: 0;
 }
 
+* {
+    transition: 0.07s;
+}
+
 .dropdown {
     position: relative;
     display: inline-block;
@@ -24,6 +28,7 @@ body {
     padding: 8px;
     border-radius: var(--rad1);
     width: 180px;
+    z-index: 9999;
     padding-bottom: 4px !important;
 }
 
@@ -86,9 +91,12 @@ body {
     height: auto;
     border-radius: var(--rad1);
     border: 0px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     box-sizing: border-box;
     margin-bottom: 10px;
+    background-color: rgba(var(--accent), 0.3);
+    border: 1px solid rgba(var(--accent), 0.7);
+    overflow: auto;
 }
 
 .h2 {
@@ -99,6 +107,10 @@ body {
     margin: 0;
     padding: 0;
     margin-bottom: 10px !important;
+}
+
+.bold {
+    font-weight: bold;
 }
 
 p {
@@ -124,6 +136,23 @@ button {
     padding: 8px;
     margin-bottom: 3px;
     text-align: left !important;
+}
+
+input {
+    background-color: rgba(var(--accent), 0.5);
+    border: 2px solid rgba(var(--accent), 0.7);
+    border-radius: var(--rad2);
+    padding: 7px;
+    margin-bottom: 2px;
+    box-sizing: border-box;
+    width: 100%;
+    color: rgba(var(--font));
+    font-family: var(--font-family);
+}
+
+input:focus {
+    background-color: rgba(var(--accent), 0.7);
+    outline: none;
 }
 
 .normal {
@@ -174,19 +203,69 @@ button {
     border-radius: var(--rad2);
 }
 
-.model {
+@keyframes modal {
+    0% {
+        opacity: 0;
+        transform: translate(-50%, -70%);
+    }
+
+    100% {
+        opacity: 1;
+        transform: translate(-50%, -50%);
+    }
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(var(--background), 0.3);
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
+    z-index: 1001;
+    text-align: center;
+    animation: modal 0.3s ease-in-out;
+    border-radius: var(--rad1);
+    padding: 14px;
+}
+
+.toolbar {
     position: fixed;
     top: 0;
     left: 0;
     right: 0;
-    bottom: 0;
-    background-color: rgba(var(--background), 0.8);
+    background-color: rgba(var(--accent), 0.2);
     backdrop-filter: blur(var(--blur));
     -webkit-backdrop-filter: blur(var(--blur));
-    z-index: 1000;
+    z-index: 999;
+    padding: 6px;
+    border-bottom: 1px solid rgba(var(--accent), 0.5);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    align-items: center;
-    justify-content: center;
+}
+
+@keyframes backdrop {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+.backdrop {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(var(--background), 0.3);
+    z-index: 1000;
+    animation: backdrop 0.3s ease-in-out;
+    backdrop-filter: blur(var(--blur));
+    -webkit-backdrop-filter: blur(var(--blur));
 }
 
 .flex {
@@ -205,4 +284,50 @@ button {
     white-space: nowrap;
     text-overflow: ellipsis;
     overflow: hidden;
+}
+
+.flex-container {
+    display: flex;
+    align-items: center;
+}
+
+.flex-bar {
+    flex-grow: 1;
+}
+
+input[type=range] {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 95%;
+    box-sizing: border-box;
+    height: 14px;
+    background: rgba(var(--background), 0.32);
+    border-radius: 20px;
+}
+
+input[type=range]::-moz-range-progress {
+    background: rgba(var(--accent), 0.8);
+}
+
+input[type=range]::-webkit-progress-value {
+    background: rgba(var(--accent), 0.8);
+}
+
+input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: rgba(var(--accent), 0.8);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+input[type=range]::-moz-range-thumb {
+    width: 14px;
+    height: 14px;
+    background: rgba(var(--accent), 0.8);
+    border: none;
+    border-radius: 50%;
+    cursor: pointer;
 }

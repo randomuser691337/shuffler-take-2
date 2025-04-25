@@ -47,6 +47,17 @@ var ui = {
             }
         }
     },
+    show: function (dr1, anim) {
+        if (dr1) {
+            if (anim) {
+                $(dr1).fadeIn(anim);
+            } else if (anim === 0) {
+                $(dr1).show();
+            } else {
+                $(dr1).fadeIn(210);
+            }
+        }
+    },
 }
 
 var tk = {
@@ -91,6 +102,11 @@ var tk = {
         }
         div.appendChild(fuck);
         return fuck;
+    },
+    modal: function () {
+        const main = tk.c('div', document.body, 'backdrop');
+        const div = tk.c('div', main, 'modal');
+        return { main, div };
     },
     img: async function (src, classn, div, draggable, directurl) {
         const fuck = document.createElement('img');
@@ -373,4 +389,63 @@ var tk = {
         }
         return { win: windowDiv, main: contentDiv, tbn, title: titlebarDiv, closebtn: closeButtonNest, winbtns, name: titleDiv, minbtn: minimizeButtonNest };
     }
+}
+
+async function lyrics(songName, songArtist) {
+    const searchUrls = [
+        {
+            url: `https://api.lyrics.ovh/v1/${encodeURIComponent(songArtist)}/${encodeURIComponent(songName)}`,
+            parse: data => data.lyrics
+        },
+        {
+            url: `https://api.lyrics.fandom.com/api.php?action=query&titles=${encodeURIComponent(songArtist)}:${encodeURIComponent(songName)}&format=json`,
+            parse: data => {
+                const pages = data.query?.pages;
+                if (pages) {
+                    const page = Object.values(pages)[0];
+                    return page?.extract || null;
+                }
+                return null;
+            }
+        }
+    ];
+
+    for (const { url, parse } of searchUrls) {
+        try {
+            const response = await fetch(url);
+
+            if (!response.ok) {
+                continue;
+            }
+
+            const data = await response.json();
+            const rawLyrics = parse(data);
+
+            if (rawLyrics) {
+                const lyrics = rawLyrics
+                    .split('\n')
+                    .map(line => line.replace(/[?.;!]/g, '').trim())
+                    .filter(line => line.length > 0)
+                    .map(line => `<p>${line.charAt(0).toUpperCase() + line.slice(1)}</p>`)
+                    .join('');
+
+                return lyrics;
+            }
+        } catch (error) {
+            console.error(`Error fetching from ${url}:`, error.message);
+        }
+    }
+
+    return null;
+}
+
+function gen(length) {
+    if (length <= 0) {
+        console.error('Length should be greater than 0');
+        return null;
+    }
+
+    const min = Math.pow(10, length - 1);
+    const max = Math.pow(10, length) - 1;
+    return Math.floor(Math.random() * (max - min + 1)) + min;
 }
